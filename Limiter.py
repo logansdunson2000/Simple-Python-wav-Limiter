@@ -8,6 +8,9 @@ import soundfile as sf
 import sounddevice as sd
 import pyloudnorm as pyln
 
+import sys
+from pathlib import Path
+
 from Limiter_Engine import process_file, render_preview
 
 
@@ -27,11 +30,24 @@ GR_HOT = "#ff7070"
 GR_BG = "#15110b"
 DIVIDER = "#444444"
 
+def resource_path(relative_path):
+    try:
+        base_path = Path(sys._MEIPASS)
+    except AttributeError:
+        base_path = Path(__file__).parent
+
+    return base_path / relative_path
 
 class LimiterApp:
     def __init__(self, root):
         self.root = root
         self.root.title("WAV Limiter")
+
+        try:
+            self.root.iconbitmap(default=str(resource_path("Limiter.ico")))
+        except tk.TclError as error:
+            print(f"Could not load window icon: {error}")
+            
         self.root.geometry("1380x960")
         self.root.minsize(1180, 900)
         self.root.configure(bg=APP_BG)
@@ -181,7 +197,7 @@ class LimiterApp:
             lightcolor=ACCENT,
             darkcolor=ACCENT,
         )
-
+    
     def build_ui(self):
         self.main = ttk.Frame(self.root, style="TFrame")
         self.main.pack(fill="both", expand=True, padx=14, pady=12)
